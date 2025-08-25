@@ -1,0 +1,19 @@
+{
+  "name": "@w-ai/cli",
+  "description": "W-AI CLI",
+  "version": "1.0.0",
+  "author": "Alexander Gladysh <agladysh@gmail.com>",
+  "license": "MIT",
+  "packageManager": "pnpm@10.13.1",
+  "type": "module",
+  "bin": {
+    "w-ai": "./src/main.ts"
+  },
+  "scripts": {
+    "prepack": "tsc --emitDeclarationOnly"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.0",
+    "typescript": "^5.9.2"
+  }
+}
