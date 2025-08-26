@@ -1,0 +1,5 @@
+name: generate-typescript-for-node
+description: generates TypeScript code for node
+input: node
+output: __infer__
+process: '@w-ai/cli/builtin/action/codegen/generate-typescript-for-node.ts'

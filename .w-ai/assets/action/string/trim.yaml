@@ -1,0 +1,51 @@
+name: trim-string
+description: trims whitespace on both ends of the string
+input: string
+output: string
+process:
+  - ts: | # typescript
+      export default ($: string): string => $.trim();
+
+test-contract:
+  - ts: | # typescript
+      // Too silly to be put in the main contract. Illustration for `ts` contracts.
+      import { Result } from '@w-ai/cli/generated/contract/review/result.ts';
+      import { Pass } from '@w-ai/cli/generated/contract/review/pass.ts';
+      import { Fail } from '@w-ai/cli/generated/contract/review/fail.ts';
+      import { Action } from '@w-ai/cli/generated/actions/trim-string.ts';
+      export default ($: Action): Result {
+        return ($.input.length <= $.output.length)
+          ? new Pass()
+          : new Fail(`trimmed length ${$.output.length} is somehow greater than the original length ${$.input.length}.`);
+      }
+
+tests: # Looks silly, because we actually trust `String.trim()`. Included for illustrative purposes.
+  - not-a-string:
+      description: should fail contract on non-strings
+      input: true
+      failure: 'todo'
+
+  - empty-string:
+      description: should not fail on trimming empty strings
+      input: ''
+      output: ''
+
+  - nothing-to-trim:
+      description: should handle when there is nothing to trim
+      input: '"nothing to trim"'
+      output: '"nothing to trim"'
+
+  - trim-left:
+      description: should trim left
+      input: '" left trim"'
+      output: '"left trim"'
+
+  - trim-right:
+      description: should trim right
+      input: '"right trim "'
+      output: '"right trim"'
+
+  - trim-both:
+      description: should trim both ends
+      input: '" both ends trimmed "'
+      output: '"both ends trimmed"'

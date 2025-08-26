@@ -1,0 +1,7 @@
+name: input
+description: if input is a boolean value, returns true, otherwise returns false
+input: unknown
+output: boolean
+process:
+  - ts: | # ts
+      export default ($: unknown): boolean => typeof($) === 'boolean';

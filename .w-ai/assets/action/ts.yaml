@@ -1,0 +1,5 @@
+name: ts
+description: arbitrary typescript code
+input: string
+output: __infer__
+process: '@w-ai/cli/builtin/action/ts.ts'
