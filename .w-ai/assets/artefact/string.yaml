@@ -1,7 +1,6 @@
 name: string
 description: any string value
 input: unknown
-output: unknown
+output: string
 contract:
-  - input:
-      - is-string
+  - is-string

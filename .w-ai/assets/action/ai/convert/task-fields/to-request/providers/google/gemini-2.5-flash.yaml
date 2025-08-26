@@ -1,0 +1,5 @@
+name: gemini-2.5-flash
+description: converts task fields to LLM request for Gemini 2.5 Flash
+input: ai/task/fields
+output: llm/request/providers/google
+process: tbd

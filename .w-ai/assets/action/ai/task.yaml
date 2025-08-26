@@ -1,0 +1,8 @@
+name: ai/task
+description: execute an AI task with Gemini 2.5 Flash
+input: ai/task/fields
+output: ai/task/report
+process:
+  - ai/generate/google/gemini-2.5-flash: !input
+contract:
+  - ai/task/contract: !input

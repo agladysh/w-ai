@@ -1,0 +1,5 @@
+name: is-node
+description: if input is a core/node value, returns true, otherwise returns false
+input: unknown
+output: boolean
+process: !builtin '@w-ai/cli/builtin/predicate/core/is-node.ts'

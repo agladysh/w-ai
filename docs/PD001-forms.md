@@ -432,8 +432,38 @@ Initial notes:
 2. Almost everything is Action or is composed of Actions (Action, Artefact, Contract, Predicate, Task, etc. --- are all
    the same).
 
-3. Namespace resolution is based on the field (e.g. input:foo is artefact/\*/foo). Conflicts are resolved by including
-   more of the path in the name: `bar/foo`.
+3. Name resolution (to promote modularity):
+   - Based on the node field (e.g. `input: foo` is `artefact/\*/foo`).
+   - Order of lookup:
+     - children (subdirectories), conflict if more than single match
+     - siblings (same directory), after children (debatable), because modules might coexist
+     - global, within same node field, conflict if more than single match
+   - Conflicts are resolved by author including more of the path in the name: `bar/foo`.
+   - A path may contain `/#/` cutoff mark in the middle to allow for action specialization:
+     - If full path is not found, it is iteratively de-specialized by removing path elements up to the mark
+     - So, for `quo/foo/#/bar/baz` the following paths are checked, in order:
+       - `quo/foo/bar/baz`
+       - `quo/foo/bar`
+       - `quo/foo`
+   - Special keyword-artefact `__infer__` may be used in `output:` to infer type Type of the last action in the process
+     is used.
+   - Notation:
+     - Special characters:
+       - `~` at the beginning of name denotes a string literal, all whitespace up to the first newline (including it)
+         after `~` is consumed (usable only in process and contract keys)
+       - `/` in the middle denotes path: `bar/foo` means artefact `foo`, residing in an immediate parent directory `bar`
+       - `?` at the end denotes optionality: `foo?` means `foo` is optional (works for paths too: `bar/foo?`, usable
+         only in artefacts key)
+     - Placeholders (usable only in process and contract keys):
+       - `{ foo }` (resolves to `{ foo: null }` in YAML) denotes a placeholder
+       - `foo` is looked up in `input` field of the node, `foo.bar.baz` is also supported
+       - `$` is the node itself (so e.g. `$.input` works)
+       - `{ '@foo/bar:baz.ts' }` is a direct reference to TypeScript implementation, residing in node module `@foo/bar`,
+         at path `bar.ts`.
+       - `{ '@foo:bar.ts' }` (no `/` in the module name), is also supported, `@` in module name is omitted in this case.
+     - Any artefacts in double underscores are reserved, e.g. `__infer__`
+     - NB: `test-contract` is a contract key too
+     - NB: notation is valid in all keys, even where it is not usable
 
 4. Action execution leaves observable trace in the form of memos (or Forms, we should ponder on naming). Fieldsets etc.
    are no longer a thing.

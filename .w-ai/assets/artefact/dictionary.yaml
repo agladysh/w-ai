@@ -1,0 +1,6 @@
+name: dictionary
+description: any dictionary value
+input: unknown
+output: dictionary
+contract:
+  - is-dictionary

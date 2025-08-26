@@ -1,14 +1,6 @@
 name: node
 description: describes process action, contract clause review action, predicate action, or artefact
-input:
-  name: node/name
-  keywords: node/keywords
-  description: node/description
-  input: node/input
-  output: node/output
-  process: [{ node/process: optional }]
-  contract: [{ node/contract: optional }]
-  templates: [{ node/templates: optional }]
-  test-contract: [{ node/contract: optional }]
-  tests: [{ node/tests: optional }]
-output: node/output
+input: !builtin '@w-ai/cli/builtin/artefact/core/node/input.ts'
+output: node
+contract:
+  - is-node

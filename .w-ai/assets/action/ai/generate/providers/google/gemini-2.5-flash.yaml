@@ -1,0 +1,10 @@
+name: gemini-2.5-flash
+description: generates a chat response with Gemini 2.5 Flash, building prompt from task fields
+input: ai/task/fields
+output: ai/task/report
+process:
+  - ai/convert/llm-result/to-task-report/#/providers/google/gemini-2.5-flash:
+      fields: !input
+      result: !do
+        llm/request/providers/google/gemini-2.5.flash: !do
+          ai/convert/task-fields/to-request/#/providers/google/gemini-2.5-flash: !input

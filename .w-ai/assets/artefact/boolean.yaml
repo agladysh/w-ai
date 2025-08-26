@@ -1,7 +1,6 @@
 name: boolean
 description: boolean true or false
 input: unknown
-output: unknown
+output: boolean
 contract:
-  - input:
-      - is-boolean
+  - is-boolean
