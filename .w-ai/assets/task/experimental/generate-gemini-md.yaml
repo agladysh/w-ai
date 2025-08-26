@@ -1,0 +1,24 @@
+name: generate-gemini-md
+description: generate the GEMINI.md file
+input:
+  filename: [[./GEMINI.md]]
+output:
+  report: llm/task/report
+process:
+  - ai/task:
+      input:
+        - task/query: { { $.description } }
+        - git/working-copy/files/all
+      output:
+        - documents/rewrite-from-scratch: { { filename } }
+contract:
+  # TODO: Move this inside ai/task
+  - git/working-copy/file-exists: { { filename } }
+  - git/working-copy/file-has-changes: { { filename } }
+  - project/lint-passes-for-file: { { filename } }
+  - document/diff-review-passes
+  - document/full-review-passes
+# GEMINI.md diff passes skeptical review
+# GEMINI.md file passes review
+
+# TODO: Contract failures should be looped into corrections somehow
