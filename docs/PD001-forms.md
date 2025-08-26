@@ -2,18 +2,11 @@
 
 - Status: **IDEATION**
 
-Inspiration: DSPy (somewhat)
+Inspiration:
 
-## Prerequisites
-
-- Add structured output support to openai-like data processing (command: `tools`, etc.)
-
-- (Optional) Refactor openai-like data processing to @or-q/plugin-openai-like, normalize command names (see also
-  `TODO.md`)
-
-## Background
-
-- See `.or-q/assets/scripts/` for pre-concept state of thought (in spirit, code is stone-age).
+- DSPy (somewhat)
+- [OR-Q](https://github.com/agladysh/or-q)
+- Unpublished prior work
 
 ## Concept
 
@@ -223,7 +216,7 @@ Additional tooling
 5. Ideally, same for architectural level
 6. Etc.
 
-> [!IMPORTANT] As or-q operates on actions and inputs, business process operates on forms and business processeses
+> [!IMPORTANT] As OR-Q operates on actions and inputs, business process operates on forms and business processeses
 > (where filling out a form shape is a primitive business process, algorithmic inputs are filled out by micro-forms)
 
 Therefore (using arktype-esque notation for schema):
@@ -231,10 +224,10 @@ Therefore (using arktype-esque notation for schema):
 NB: Each entry will be in a separate yaml file. Slashes imply asset resolution.
 
 ```yaml
-string: '@or-q/plugin-primitives/actions/string.ts'
-boolean: '@or-q/plugin-primitives/actions/boolean.ts'
+string: '@w-ai/plugin-primitives/actions/string.ts'
+boolean: '@w-ai/plugin-primitives/actions/boolean.ts'
 
-shell: '@or-q/plugin-shell/actions/shell.ts' # Lazy. Prompt-heavy, should be yaml
+shell: '@w-ai/plugin-shell/actions/shell.ts' # Lazy. Prompt-heavy, should be yaml
 
 then: tbd
 else: tbd

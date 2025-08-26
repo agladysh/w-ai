@@ -1,4 +1,4 @@
-name: input
+name: is-boolean
 description: if input is a boolean value, returns true, otherwise returns false
 input: unknown
 output: boolean
