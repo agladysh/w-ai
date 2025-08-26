@@ -219,7 +219,7 @@ Additional tooling
 > [!IMPORTANT] As OR-Q operates on actions and inputs, business process operates on forms and business processeses
 > (where filling out a form shape is a primitive business process, algorithmic inputs are filled out by micro-forms)
 
-Therefore (using arktype-esque notation for schema):
+Therefore:
 
 NB: Each entry will be in a separate yaml file. Slashes imply asset resolution.
 
@@ -395,4 +395,77 @@ NB: LLMs are unreliable. Thus, contracts.
 
 Codemods from the get go.
 
-self-linting of codestyle by is-good-action-definition etc.,
+Self-linting of codestyle by is-good-action-definition etc.,
+
+(This concludes the study: we've got sidetracked, but got interestring results.)
+
+### Study 3: Declarative Processes
+
+Motivation:
+
+- Design by Contract. However, we're not creating another programming language.
+
+- Existing primitives (should the system be successful) will be dwarfed in number by applied processes and their local
+  variations.
+
+- We creating a system to express business processes for AI (hopefully) to be able to cope with.
+
+- An LLM call is a black box, which implements an action in a business process as an ideal system (akin to IFR in TRIZ).
+
+- One cannot guarantee the outcome of this action by manipulating its inputs. The only way to ensure successful outcope
+  is by introducing feedback loops.
+
+- Not all business process actions are executable by a single LLM call. There should be a robust way to de-idealize the
+  action into several.
+
+- There should be also a way to quickly compose together a workable solution for the problem at hand without spending
+  too much effort on the nuances and contracts.
+
+The design, presented here, claims to have a shot at the above.
+
+See `.w-ai/assets` in the repository as the ground truth.
+
+Initial notes:
+
+1. Action is a Process (which is a series of actions).
+
+2. Almost everything is Action or is composed of Actions (Action, Artefact, Contract, Predicate, Task, etc. --- are all
+   the same).
+
+3. Namespace resolution is based on the field (e.g. input:foo is artefact/\*/foo). Conflicts are resolved by including
+   more of the path in the name: `bar/foo`.
+
+4. Action execution leaves observable trace in the form of memos (or Forms, we should ponder on naming). Fieldsets etc.
+   are no longer a thing.
+   - Observability, is, of course, a thing within the system itself as well, that's how e.g. recovering from failing
+     contracts should work.
+
+   - This is how the system would self-evolve: by analyzing its own performance.
+
+   - Current thought is to write everything to files, under Git. We will deal with inevitable bloat after the system
+     proves itself.
+
+5. The idea is to translate YAML definitions to idiomatic typesafe TypeScript, not "run" them directly.
+   - Note we do not build TypeScript, so translation and running should be fast.
+
+   - This way we hope to avoid type system complexity and a few other problems (in exchange for type narrowing issues,
+     which are, hopefully, solvable), providing a hope for a truly minimal core of the system, leveraging existing
+     TypeScript / Node.js infrastructure to bootstrap.
+
+   - TypeScript approach will create some solvable difficulties with running the thing as a service, but we should see
+     the project to survive long enough for them to raise first.
+
+   - Mapping TypeScript type system diagnostics to author-friendly task definition diagnostics can also be challenging
+     (though hopefully doable with proper tooling), but an AI author would cope, and, again, we should see if that
+     system reaches broader adoption for humans first.
+
+   - Type mapping from foo-bar-baz to something TypeScript understand might also be non-trivial, but we might get away
+     with postulating case-insensitive equivalence of foo-bar-baz, foo_bar-Baz, and FooBarBaz, and normalize to dashes
+     in YAML, and CamelCase in TypeScript.
+
+   - Note that performance (hopefully) should not be key here, as LLM calls are relatively slow, and, anyway, getting a
+     successful result created in observable and (hopefully) understandable manner is better than getting a result
+     quickly.
+
+6. We would like to have a plugin system, where node packages provide additional assets to the same hierarchical
+   namespace, similar to OR-Q. (Namespace collisions are easily solvable by enforceable path conventions.)
