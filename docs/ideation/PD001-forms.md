@@ -701,6 +701,9 @@ Normalized verb is `[ module, file, verb ]` tuple. String verb `foo` is normaliz
 `[ @w-ai/plugin-ir, @w-ai/plugin-ir/generated/ir/foo.ts, foo ]`. Verbs are transparently disambiguated on load
 post-processing, so `verb` to `[ module, file ]` pair is unique across the file.
 
+NB: `module` is used to manage `package.json` list of dependencies. It is false for local ad-hoc code that does not
+create a dependency.
+
 Exception: `literal` verb is translated to `literal`.
 
 AST conventions:
