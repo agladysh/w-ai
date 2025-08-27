@@ -3,6 +3,8 @@ description: execute an AI task
 input: ai/task/fields
 output: ai/task/report
 process:
+  # Under the hood this generates new YAML, generates TS, runs lint on it, and exits the process
+  # The process is then restarted by its outer runner (picking up where its left off)
   - ai/task/contract-for as contract: { input }
   - ai/task/model-for as model: { input }
   - . ai/generate/providers/:process.model: { input }

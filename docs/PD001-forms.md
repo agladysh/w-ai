@@ -499,3 +499,43 @@ Initial notes:
 
 6. We would like to have a plugin system, where node packages provide additional assets to the same hierarchical
    namespace, similar to OR-Q. (Namespace collisions are easily solvable by enforceable path conventions.)
+
+On state persistence:
+
+1. We need to be invariant to process restarts per implicit product requirements (long-runnning autonomous processes,
+   etc.).
+
+2. We would like to rely on this invariance for code generation as well: when a new contract (or other node) is needed,
+   it is generated in yaml, linted, translated to ts, linted again, and then we exit normally (perhaps indicating in the
+   persisted state that we need a restart, but see next). The worker process is then started again by the runner, and
+   resumes.
+
+3. Ideally, state form is universal for any node and worker state, no additional metadata is written.
+
+4. We need to write memos anyway, ideally the memos themselves (in their main machine-readable form) are the state,
+   observable and debuggable.
+
+Some ideation on state fs structure:
+
+```text
+# we crash on overflow of sequence numbers
+.w-ai/.active/runner-<runner-pid>/
+  .metadata.yaml # Any runner metadata, including instance UUID to protect from PID rotation
+  0001-<node-name>/ # This is the root action, now running
+    .input.yaml # Action input, includes worker PID
+    0001-<node-name>.yaml # Memo of a completed action
+    0002-<node-name>.yaml/ # This is sub-action, it is currently running
+      .input.yaml
+    0003-<node-name>.yaml/ # Another currently running sub-action
+      .input.yaml
+      ... and so on
+```
+
+NB: Directories have the `.yaml` "extension" to lessen chances of corrupt state, where an action is both completed and
+running at the same time.
+
+Unless a dedicated debug flag is enabled, we persist only nodes in process, contract, and test-contract, as well as any
+node at all that has its `meta.__runner__.persist` flag set to true.
+
+This is a bit fs-heavy, but, OTOH, we may always set `meta.__runner___.persist` to false for any actions without
+side-effects we find spammy.
