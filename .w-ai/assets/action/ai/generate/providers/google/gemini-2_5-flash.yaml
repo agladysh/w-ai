@@ -5,6 +5,7 @@ description: generates a chat response with Gemini 2.5 Flash, building prompt fr
 input: ai/task/fields
 output: ai/task/report
 
+# TODO: Move notation examples to documentation and cleanup
 process:
   - ai/convert/task-fields/to-request/#/:meta.model # Unnamed step, consumes node.input, because it is the first one
 

@@ -6,7 +6,10 @@ Keep sections in decreasing order of priority.
 
 - [x] Remove `input:` contracts: input contracts are always guaranteed, we validate only outputs and side-effects
 - [x] Document YAML placeholder conventions
+- [ ] Allow `foo/*` (and perhaps minimatch globstar) in input and output (e.g. `contract/report/*`)
+- [ ] Document absolute paths (e.g. `/foo/bar`) and matchers (e.g. `/foo/*/bar`)
 - [ ] Update documentation to match the code
+- [ ] Move PD001 to archival, extract Study 3 to e.g `docs/CONCEPT.md`
 - [ ] Implement `generate-gemini-md` dependencies
 - [ ] Implement `contract/`
 - [ ] Implement `@w-ai/cli/builtin/artefact/core/node/input.ts`

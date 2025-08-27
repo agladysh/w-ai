@@ -454,14 +454,12 @@ Initial notes:
        - `/` in the middle denotes path: `bar/foo` means artefact `foo`, residing in an immediate parent directory `bar`
        - `?` at the end denotes optionality: `foo?` means `foo` is optional (works for paths too: `bar/foo?`, usable
          only in artefacts key)
+       - TBD: notation from `.w-ai/assets/action/ai/generate/providers/google/gemini-2_5-flash.yaml`
+     - Node names may contain letters, numbers, underscores, dashes, and cannot begin with an underscore or dash
+     - Any nodes names in double underscores are reserved keywords, e.g. `__infer__`
      - Placeholders (usable only in process and contract keys):
        - `{ foo }` (resolves to `{ foo: null }` in YAML) denotes a placeholder
        - `foo` is looked up in `input` field of the node, `foo.bar.baz` is also supported
-       - `$` is the node itself (so e.g. `$.input` works)
-       - `{ '@foo/bar:baz.ts' }` is a direct reference to TypeScript implementation, residing in node module `@foo/bar`,
-         at path `bar.ts`.
-       - `{ '@foo:bar.ts' }` (no `/` in the module name), is also supported, `@` in module name is omitted in this case.
-     - Any artefacts in double underscores are reserved, e.g. `__infer__`
      - NB: `test-contract` is a contract key too
      - NB: notation is valid in all keys, even where it is not usable
 
@@ -515,6 +513,8 @@ On state persistence:
 4. We need to write memos anyway, ideally the memos themselves (in their main machine-readable form) are the state,
    observable and debuggable.
 
+TBD: Document what is implied in `.w-ai/assets/action/string/trim.yaml`.
+
 Some ideation on state fs structure:
 
 ```text
@@ -539,3 +539,226 @@ node at all that has its `meta.__runner__.persist` flag set to true.
 
 This is a bit fs-heavy, but, OTOH, we may always set `meta.__runner___.persist` to false for any actions without
 side-effects we find spammy.
+
+On execution:
+
+- Process feeds input of the last action to the next, contract feeds output of process to each action, otherwise they
+  are the same.
+
+- Ideally, both `process` and `contract` keys are implemented as sugars, which are translated to e.g. node's first-class
+  `__run__` field on load, which handles pipelining on general principles.
+
+- If a node has `__run__` field set explicitly, it is executed before anything else (that is, `process` and `contract`
+  push to it, not override).
+
+- `contract` also injects last step in `__run__`, which captures contract steps data as entry in the memo, returns
+  `true` if all contract entries are `true`, which becomes `__run__.__result__`.
+
+- `__run__.__result__` is set to a first class reject object on any errors.
+
+- `process` in fact does similar, only simpler and without branching: it injects last step, which merely captures
+  `process.__previous__` into a memo entry.
+
+- Ideally, these last steps are proper first-class actions, defined in YAML, and configurable per node, if desired.
+
+- Parent node's `process` continues if child's `__run__.__result__` is `true`, and stops otherwise.
+
+- Artefacts execute their processes (normally empty) and contracts (if any) on construction, on general principles (that
+  is, pipeline is to be designed in such manner that they are naturally executed).
+
+- Which means that artefacts and predicates are also first-class executable actions, accessible e.g. in process by e.g.
+  `/artefacts/**/string`.
+
+We would need parallel action execution as well. Process-like fields should support nested arrays, with attribution.
+
+```yaml
+process:
+  - __parallel__ as results:
+      - fetch as foo: https://example.org/1
+      - fetch as bar: https://example.org/2
+      - fetch as baz: https://example.org/3
+  - . json/stringify: { process.results }
+contract:
+  - is-string
+```
+
+Which translates to (rough AST/s-expression-esque sketch):
+
+```yaml
+# Note metadata like source mapping will be included as a third argument of the tuple
+# E.g.: `[ ref, [ __run__, process ] ]` is actually `[ ref, [ __run__, process ], [ __file__, 10, 20 ] ]`,
+# where 10 is the line number, and 20 is the column number.
+# On any failures, __run__.__result__ is set to a first-class reject object, and running bails out
+__run__: [
+    seqential,
+    [
+      [set, [[literal, [[__run__, process]]], {}]],
+      [set, [[literal, [[__run__, process, __previous__]]], [ref, [literal, [input]]]]],
+      [
+        set,
+        [
+          [literal, [[__run__, process, __previous__], [__run__, process, results]]],
+          [
+            parallel, # Pushes scope. Inherits existing variables by copy-on-write, local changes do not propagate up
+            [
+              [
+                set,
+                [
+                  [literal, [[__run__, process, __previous__], [__run__, process, foo]]],
+                  [
+                    call,
+                    [
+                      # We may opt pre-resolve unambigous static references at the translation step as an optimization,
+                      # but a trivial runtime cache in resolve will go a long way to offsetting the performance hit.
+                      # We may also opt to have specialized resolve commands, e.g. resolve-globstar, etc. in the future.
+                      # __dirpath__ contains pre-parsed path of the current node's dirname.
+                      [resolve, [literal, [__dirpath__, action, fetch]]],
+                      https://example.org/1,
+                    ],
+                  ],
+                ],
+              ],
+              [
+                set,
+                [
+                  [literal, [[__run__, process, __previous__], [__run__, process, bar]]],
+                  [call, [[resolve, [literal, [__dirpath__, action, fetch]]], https://example.org/2]],
+                ],
+              ],
+              [
+                set,
+                [
+                  [literal, [[__run__, process, __previous__], [__run__, process, baz]]],
+                  [call, [[resolve, [literal, [__dirpath__, action, fetch]]], https://example.org/3]],
+                ],
+              ],
+            ],
+          ],
+        ],
+      ],
+      [
+        set,
+        [
+          [literal, [[__run__, process, __previous__]]],
+          [
+            call,
+            [
+              [resolve, [literal, [__dirpath__, action, json/stringify]]],
+              [ref, [literal, [__run__, process, results]]],
+            ],
+          ],
+        ],
+      ],
+      [
+        set,
+        [
+          [literal, [[output]]],
+          [
+            new, # TODO: Fishy, hidden compexity.
+            [
+              [ref, [literal, [__output_type__]]], # calls `act` and `bail` internally as necessary
+              [ref, [literal, [__run__, process, __previous__]]],
+            ],
+          ],
+        ],
+      ],
+      [set, [[literal, [[__run__, contract]]], { status: running, clauses: [] }]],
+      [
+        push,
+        [
+          [literal, [__run__, contract, clauses]],
+          [
+            set, # set returns the value for convenience
+            [
+              [literal, [[__run__, contract, __previous__]]],
+              [
+                call,
+                [[resolve, [literal, [__dirpath__, predicate, is-string]]], [ref, [literal, [__run__, contract]]]],
+              ],
+            ],
+          ],
+        ],
+      ],
+      [set, [[literal, [[__run__, contract, status]]], [every, [ref, [literal, [__run__, contract, clauses]]]]]],
+      [unless, [[ref, [literal, [__run__, contract, status]]], [bail, [[ref, [literal, [__run__, contract]]]]]]],
+    ],
+  ]
+```
+
+The above may be viewed as IR of the node program, made to be trivial to generate TypeScript from. Any non-trivialities
+in generation are generally to be resolved towards adapting the IR form, balancing with the ease of the IR generation
+itself.
+
+Ideally (in spirit), the whole thing bootstraps from a hand-written bootstrapping node, which has only `name`,
+`description`, and `__run__` fields. All other fields and logic are handled by `__run__` as conventions.
+
+Interestingly, that does not imply `defun`, as we already have actions. E.g., ideally, persistence and even
+runner/worker logic are actually nodes.
+
+All verbs in the AST are actuall first-class action nodes, written in IR, working on array inputs, and usable from
+normal code. To preserve readability of the generated code, the IR has the following convention on verb name resolution:
+Normalized verb is `[ module, file, verb ]` tuple. String verb `foo` is normalized to
+`[ @w-ai/plugin-ir, @w-ai/plugin-ir/generated/ir/foo.ts, foo ]`. Verbs are transparently disambiguated on load
+post-processing, so `verb` to `[ module, file ]` pair is unique across the file.
+
+Exception: `literal` verb is translated to `literal`.
+
+AST conventions:
+
+Normalized AST node shape is `[ [ module, file, verb ] | "literal", param, [ file, line, column ] ]`.
+
+If `"literal"`, node is substituted with `param`.
+
+If `param` is not an array, it is used directly as an argument to verb.
+
+If `param` is array, it is treated as nested program (list of AST nodes).
+
+Illustration (sketch):
+
+```yaml
+[set, [[literal, [[__run__, contract, status]]], [some, [ref, [literal, [__run__, contract, clauses]]]]]]
+```
+
+is naïvely translated to:
+
+```ts
+import { RuntimeNode } from '@w-ai/lib/node/runtime.ts';
+import { set } from '@w-ai/plugin-ir/generated/ir/set.ts';
+import { some } from '@w-ai/plugin-ir/generated/ir/some.ts';
+import { ref } from '@w-ai/plugin-ir/generated/ir/ref.ts';
+
+export default async <T extends RuntimeNode>(node: T) => {
+  return set(node, [['__run__', 'contract', 'status']], some(node, ref(node, ['__run__', 'contract', 'clauses'])));
+};
+```
+
+...which is fine for normal nodes, but for the IR nodes we might eventually strive to translate to something like this
+instead:
+
+```ts
+import { RuntimeNode } from '@w-ai/lib/node/runtime.ts';
+
+export default async <T extends Node>(RuntimeNode: T): Promise<T> => {
+  node.__run__.contract.status = node.__run__.contract.clauses.some((v) => v); // Async omitted
+  return node;
+};
+```
+
+Verbs:
+
+- `set`: `[ objpath[], value ]` -> `value`, sets `node[...objpath[i]]` to `value` for each `objpath[]` and returns that
+  value
+- `literal`: `[ value ]` -> `value`, returns value, needed to work with array values
+- `ref`: `[ objpath[] ]` -> `value`, looks up value in node by objpath
+- `new`: tbd, hidden complexity.
+- `call`: tbd
+- `resolve`: tbd
+- `sequential`: tbd
+- `parallel`: tbd, calls node.clone() per item, which returns a CoW clone of the node.
+- `bail`: tbd
+- `unless`: tbd
+- `push`: tbd
+- `every`: tbd, checks that each array element is `true`
+
+For ease of the initial implementation of the translator, `ref` should be wrapped in `get`, which accepts a string,
+parses it, and calls `ref` internally.
