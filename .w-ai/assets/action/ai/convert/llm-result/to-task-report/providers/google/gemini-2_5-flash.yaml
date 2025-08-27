@@ -1,7 +1,7 @@
-name: gemini-2.5-flash
+name: gemini-2_5-flash
 description: converts Gemini 2.5 Flash LLM result to task report, based on task fields, with side-effects
 input:
   fields: ai/task/fields
-  result: llm/result/providers/google/gemini-2.5-flash
+  result: llm/result/providers/google/gemini-2_5-flash
 output: ai/task/report
 process: tbd

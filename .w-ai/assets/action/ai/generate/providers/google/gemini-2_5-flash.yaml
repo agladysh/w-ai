@@ -1,6 +1,6 @@
-name: gemini-2.5-flash
+name: gemini-2_5-flash
 meta:
-  model: providers/google/gemini-2.5.flash
+  model: providers/google/gemini-2_5-flash
 description: generates a chat response with Gemini 2.5 Flash, building prompt from task fields
 input: ai/task/fields
 output: ai/task/report
@@ -18,19 +18,19 @@ process:
   # Named step with arguments, brief form
   - debug/log as my-step-name:
       message: We're here again
-      input: { process.__previos__ }
+      input: { process.__previous__ }
 
   # Named step, raw form
   - do: debug/log
     with:
       message: And again
-      input: { process.__previos__ }
+      input: { process.__previous__ }
 
   # Nested shorthand notation, injects hygienic named steps prior to this one (preserving output and guaranteeing no naming conflicts), optional argument is input in YAML
   # TODO: YAGNI?
   # - . debug/log:
   #     message: { . string/trim " Hey-hey! " }
-  #     input: { process.__previos__ }
+  #     input: { process.__previous__ }
 
   - convert-response: # Named step, long form (so we may have additional fields, like description)
       do: ai/convert/llm-result/to-task-report/#/:meta.model

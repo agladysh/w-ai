@@ -1,4 +1,4 @@
-name: gemini-2.5-flash
+name: gemini-2_5-flash
 description: converts task fields to task report for Gemini 2.5 Flash
 input: ai/task/fields
 output: ai/task/report

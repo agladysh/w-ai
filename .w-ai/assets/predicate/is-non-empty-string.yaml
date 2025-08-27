@@ -1,7 +1,7 @@
 name: is-non-empty-string
 description: if input is a non-empty string value, returns true, otherwise returns false
 input: string
-output: string
+output: boolean
 process:
   - . ts: | # ts
       export default ($: string): boolean => $.length > 0;
