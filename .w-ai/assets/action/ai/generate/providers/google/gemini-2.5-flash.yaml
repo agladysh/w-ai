@@ -1,10 +1,30 @@
 name: gemini-2.5-flash
+meta:
+  model: providers/google/gemini-2.5.flash
 description: generates a chat response with Gemini 2.5 Flash, building prompt from task fields
 input: ai/task/fields
 output: ai/task/report
+
 process:
-  - ai/convert/llm-result/to-task-report/#/providers/google/gemini-2.5-flash:
-      fields: !input
-      result: !do
-        llm/request/providers/google/gemini-2.5.flash: !do
-          ai/convert/task-fields/to-request/#/providers/google/gemini-2.5-flash: !input
+  - ai/convert/task-fields/to-request/#/:meta.model # Unnamed step, consumes node.input, because it is the first one
+
+  - run-llm-request: llm/request/:meta.model # Named step, short form. Is fed previous step's output as input
+
+  # Unnamed step with arguments (otherwise ts looks silly).
+  - . debug/log:
+      message: We're here
+      input: { process.run-llm-request }
+
+  # Named step with arguments, brief form
+  - debug/log as my-step-name:
+      message: We're here again
+      input: { process.__previos__ }
+
+  - convert-response: # Named step, long form (so we may have additional fields, like description)
+      do: ai/convert/llm-result/to-task-report/#/:meta.model
+      with: # Explicit input
+        fields: { input }
+        result: { process.run-llm-request }
+# TODO: Use this process form and get rid of tags. Document how it works.
+# TODO: Document :<node-field.lookup> path element
+# TODO: Document that path elements may not contain spaces

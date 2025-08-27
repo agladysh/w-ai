@@ -3,5 +3,5 @@ description: if input is a string value, returns true, otherwise returns false
 input: unknown
 output: boolean
 process:
-  - ts: | # ts
+  - . ts: | # ts
       export default ($: unknown): boolean => typeof($) === 'string';

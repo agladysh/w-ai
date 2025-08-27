@@ -3,5 +3,5 @@ description: if input is a dictionary value, returns true, otherwise returns fal
 input: unknown
 output: boolean
 process:
-  - ts: | # ts
+  - . ts: | # ts
       export default ($: unknown): boolean => typeof($) === 'object' && $ !== null;

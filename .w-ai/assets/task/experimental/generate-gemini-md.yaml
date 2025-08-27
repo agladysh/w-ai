@@ -3,7 +3,7 @@ description: generate the GEMINI.md file
 input: null
 output: __infer__
 process:
-  - ai/task: # Specific model due to size
+  - . ai/task: # Specific model due to size
       - ai/input/query: Generate new GEMINI.md file
       - ai/input/content-of-files:
           root: !do git/absolute-path-to-working-copy-root

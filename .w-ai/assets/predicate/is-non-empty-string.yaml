@@ -3,5 +3,5 @@ description: if input is a non-empty string value, returns true, otherwise retur
 input: string
 output: string
 process:
-  - ts: | # ts
+  - . ts: | # ts
       export default ($: string): boolean => $.length > 0;

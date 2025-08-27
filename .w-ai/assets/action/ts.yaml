@@ -1,5 +1,5 @@
 name: ts
 description: arbitrary typescript code
 input: string
-output: !infer
-process: !builtin '@w-ai/cli/builtin/action/ts.ts'
+output: __infer__
+process: 'builtin:@w-ai/cli/builtin/action/ts.ts' # TODO: Document builtin resolution for processes

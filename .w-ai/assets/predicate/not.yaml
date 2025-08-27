@@ -3,5 +3,5 @@ description: if input is true, returns false, and vice versa
 input: boolean
 output: boolean
 process:
-  - ts: | # ts
+  - . ts: | # ts
       export default ($: boolean): boolean => !$;

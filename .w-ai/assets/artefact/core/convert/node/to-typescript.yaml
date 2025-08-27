@@ -1,9 +1,13 @@
 name: to-typescript
+meta:
+  filename:
 description: converts a W-AI node to TypeScript code
 input: core/node
 output: fs/content-of-files
 process:
+  - =body: |
+      tbd
+  - resolve-nunjucks-template as filename: '{{ $.__full_name__ }}.ts'
   - dictionary-from-entries:
-      - !do resolve-nunjucks-template: '{{ $.__full_name__ }}.ts'
-      - !do resolve-nunjucks-template: |
-          TBD
+      - { process.body }
+      - { process.filename }

@@ -3,11 +3,11 @@ description: trims whitespace on both ends of the string
 input: string
 output: string
 process:
-  - ts: | # typescript
+  - . ts: | # typescript
       export default ($: string): string => $.trim();
 
 test-contract:
-  - ts: | # typescript
+  - . ts: | # typescript
       // Too silly to be put in the main contract. Illustration for `ts` contracts.
       import { Result } from '@w-ai/cli/generated/contract/review/result.ts';
       import { Pass } from '@w-ai/cli/generated/contract/review/pass.ts';
