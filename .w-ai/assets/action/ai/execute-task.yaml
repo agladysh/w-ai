@@ -1,0 +1,10 @@
+name: ai/execute-task
+description: execute an AI task
+input: ai/task/fields
+output: ai/task/report
+process:
+  - ai/task/contract-for as contract: { input }
+  - ai/task/model-for as model: { input }
+  - . ai/generate/providers/:process.model: { input }
+contract:
+  - ':process.contract' # Yep, we just generated a new TS file above, this should load it from FS and run

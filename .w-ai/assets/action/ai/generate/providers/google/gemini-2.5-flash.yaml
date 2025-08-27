@@ -20,11 +20,24 @@ process:
       message: We're here again
       input: { process.__previos__ }
 
+  # Named step, raw form
+  - do: debug/log
+    with:
+      message: And again
+      input: { process.__previos__ }
+
+  # Nested shorthand notation, injects hygienic named steps prior to this one (preserving output and guaranteeing no naming conflicts), optional argument is input in YAML
+  # TODO: YAGNI?
+  # - . debug/log:
+  #     message: { . string/trim " Hey-hey! " }
+  #     input: { process.__previos__ }
+
   - convert-response: # Named step, long form (so we may have additional fields, like description)
       do: ai/convert/llm-result/to-task-report/#/:meta.model
       with: # Explicit input
         fields: { input }
         result: { process.run-llm-request }
 # TODO: Use this process form and get rid of tags. Document how it works.
-# TODO: Document :<node-field.lookup> path element
+# TODO: Document :<node-field.lookup> path element (with sanation!)
+# (including optional syntax with :input.my-optional? with proper //->/ collapse when used as a directory name)
 # TODO: Document that path elements may not contain spaces

@@ -6,13 +6,7 @@ Keep sections in decreasing order of priority.
 
 - [x] Remove `input:` contracts: input contracts are always guaranteed, we validate only outputs and side-effects
 - [x] Document YAML placeholder conventions
-- [ ] Switch to YAML tags, introducing a concise YAML form, translating to JSON-equivalent verbose YAML form (where
-      action/string/reference are clearly tagged objects), and document that
-  - `!input`, and other node fields
-  - `!builtin` (and replace `:` with `/` in paths, so imports just work without string transformation)
-  - `!do`
-  - `!infer`
-  - `!ref foo.bar.baz`
+- [ ] Update documentation to match the code
 - [ ] Implement `generate-gemini-md` dependencies
 - [ ] Implement `contract/`
 - [ ] Implement `@w-ai/cli/builtin/artefact/core/node/input.ts`

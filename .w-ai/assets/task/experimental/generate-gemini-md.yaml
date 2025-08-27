@@ -3,14 +3,15 @@ description: generate the GEMINI.md file
 input: null
 output: __infer__
 process:
-  - . ai/task: # Specific model due to size
-      - ai/input/query: Generate new GEMINI.md file
-      - ai/input/content-of-files:
-          root: !do git/absolute-path-to-working-copy-root
-          pattern: '**/*'
-      - ai/action/overwrite-file: ./GEMINI.md
+  - . ai/execute-query: Generate new GEMINI.md file
+# Expected task fields (pseudocode)
+# - { . ai/input/query input/query }
+# - { . ai/action/overwrite-file "./GEMINI.md" }
+# - . ai/input/content-of-files:
+#     root: { . git/absolute-path-to-root-of-working-copy }
+#     pattern: '**/*'
 # contract:
-#   # TODO: Move this inside ai/task
+#   # TODO: AI task should generate something like this (with updated syntax, of course)
 #   - git/working-copy/file-exists: { $.const.filename }
 #   - git/working-copy/file-has-changes: { $.const.filename }
 #   - project/lint-passes-for-file: { $.const.filename }
