@@ -11,6 +11,9 @@ importers:
       '@w-ai/cli':
         specifier: workspace:*
         version: link:packages/cli
+      '@w-ai/plugin-stub':
+        specifier: workspace:*
+        version: link:packages/plugin-stub
     devDependencies:
       '@eslint/js':
         specifier: ^9.34.0
@@ -41,6 +44,48 @@ importers:
         version: 8.41.0(eslint@9.34.0)(typescript@5.9.2)
 
   packages/cli:
+    dependencies:
+      '@w-ai/lib':
+        specifier: workspace:*
+        version: link:../lib
+      arktype:
+        specifier: ^2.1.20
+        version: 2.1.20
+      immutable-plugin-system:
+        specifier: link:../../../immutable-plugin-system
+        version: link:../../../immutable-plugin-system
+      installed-node-modules:
+        specifier: ^1.0.1
+        version: 1.0.1
+      yaml:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@types/node':
+        specifier: ^24.2.0
+        version: 24.3.0
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
+  packages/lib:
+    dependencies:
+      immutable-plugin-system:
+        specifier: link:../../../immutable-plugin-system
+        version: link:../../../immutable-plugin-system
+    devDependencies:
+      '@types/node':
+        specifier: ^24.2.0
+        version: 24.3.0
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
+  packages/plugin-stub:
+    dependencies:
+      '@w-ai/lib':
+        specifier: workspace:*
+        version: link:../lib
     devDependencies:
       '@types/node':
         specifier: ^24.2.0
@@ -50,6 +95,12 @@ importers:
         version: 5.9.2
 
 packages:
+
+  '@ark/schema@0.46.0':
+    resolution: {integrity: sha512-c2UQdKgP2eqqDArfBqQIJppxJHvNNXuQPeuSPlDML4rjw+f1cu0qAlzOG4b8ujgm9ctIDWwhpyw6gjG5ledIVQ==}
+
+  '@ark/util@0.46.0':
+    resolution: {integrity: sha512-JPy/NGWn/lvf1WmGCPw2VGpBg5utZraE84I7wli18EDF3p3zc/e9WolT35tINeZO3l7C77SjqRJeAUoT0CvMRg==}
 
   '@eslint-community/eslint-utils@4.7.0':
     resolution: {integrity: sha512-dyybb3AcajC7uha6CvhdVRJqaKyn7w2YKqKyAN37NKYgZT36w+iRb0Dymmc5qEJ549c/S31cMMSFd75bteCpCw==}
@@ -244,6 +295,9 @@ packages:
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+
+  arktype@2.1.20:
+    resolution: {integrity: sha512-IZCEEXaJ8g+Ijd59WtSYwtjnqXiwM8sWQ5EjGamcto7+HVN9eK0C4p0zDlCuAwWhpqr6fIBkxPuYDl4/Mcj/+Q==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -468,6 +522,10 @@ packages:
   ini@4.1.3:
     resolution: {integrity: sha512-X7rqawQBvfdjS10YU1y1YVreA3SsLrW9dX2CewP2EbBJM4ypVNLDkO5y04gejPwKIY9lR+7r9gn3rFPt/kmWFg==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+
+  installed-node-modules@1.0.1:
+    resolution: {integrity: sha512-0Lyp02JEcf5H5C4Twi5xwPSs5iu8Shuh35IygoASK/bfZOTxsCODr1ibMtLkinJ/ePGl03q7AGEi/xYg6aRdEA==}
+    engines: {node: '>=14'}
 
   is-alphabetical@2.0.1:
     resolution: {integrity: sha512-FWyyY60MeTNyeSRpkM2Iry0G9hpr7/9kD40mD/cGQEuilcZYS4okz8SN2Q6rLCJ8gbCt6fN+rC+6tMGS99LaxQ==}
@@ -902,11 +960,22 @@ packages:
     resolution: {integrity: sha512-si7QWI6zUMq56bESFvagtmzMdGOtoxfR+Sez11Mobfc7tm+VkUckk9bW2UeffTGVUbOksxmSw0AA2gs8g71NCQ==}
     engines: {node: '>=12'}
 
+  yaml@2.8.1:
+    resolution: {integrity: sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
 snapshots:
+
+  '@ark/schema@0.46.0':
+    dependencies:
+      '@ark/util': 0.46.0
+
+  '@ark/util@0.46.0': {}
 
   '@eslint-community/eslint-utils@4.7.0(eslint@9.34.0)':
     dependencies:
@@ -1127,6 +1196,11 @@ snapshots:
   ansi-styles@6.2.1: {}
 
   argparse@2.0.1: {}
+
+  arktype@2.1.20:
+    dependencies:
+      '@ark/schema': 0.46.0
+      '@ark/util': 0.46.0
 
   balanced-match@1.0.2: {}
 
@@ -1349,6 +1423,11 @@ snapshots:
   imurmurhash@0.1.4: {}
 
   ini@4.1.3: {}
+
+  installed-node-modules@1.0.1:
+    dependencies:
+      glob: 11.0.3
+      yaml: 2.8.1
 
   is-alphabetical@2.0.1: {}
 
@@ -1859,5 +1938,7 @@ snapshots:
       ansi-styles: 6.2.1
       string-width: 5.1.2
       strip-ansi: 7.1.0
+
+  yaml@2.8.1: {}
 
   yocto-queue@0.1.0: {}

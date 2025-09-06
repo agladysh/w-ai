@@ -1,6 +1,6 @@
 {
   "name": "@w-ai/workspace",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "W-AI: AI Must Work!",
   "scripts": {
@@ -23,9 +23,10 @@
   ],
   "author": "Alexander Gladysh <agladysh@gmail.com>",
   "license": "MIT",
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.15.0",
   "dependencies": {
-    "@w-ai/cli": "workspace:*"
+    "@w-ai/cli": "workspace:*",
+    "@w-ai/plugin-stub": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",

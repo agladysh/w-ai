@@ -1,14 +1,17 @@
 {
-  "name": "@w-ai/cli",
-  "description": "W-AI CLI",
+  "name": "@w-ai/lib",
+  "description": "W-AI Lib: Library for Plugins",
   "version": "0.1.0",
   "author": "Alexander Gladysh <agladysh@gmail.com>",
   "license": "MIT",
   "packageManager": "pnpm@10.15.0",
   "type": "module",
-  "bin": {
-    "w-ai": "./src/main.ts"
-  },
+  "exports": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "scripts": {
     "prepack": "tsc --emitDeclarationOnly"
   },
@@ -17,10 +20,6 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@w-ai/lib": "workspace:*",
-    "arktype": "^2.1.20",
-    "immutable-plugin-system": "link:../../../immutable-plugin-system",
-    "installed-node-modules": "^1.0.1",
-    "yaml": "^2.8.1"
+    "immutable-plugin-system": "link:../../../immutable-plugin-system"
   }
 }
