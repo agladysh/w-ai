@@ -1,14 +1,17 @@
-# PD001: Form-based AI
+# I01: Studies in Contract-Driven Declarative AI-Enabled Processes
 
+- Legacy Title: "PD001: Form-based AI"
 - Status: **IDEATION**
 
-Inspiration:
+## Inspiration
 
 - DSPy (somewhat)
 - [OR-Q](https://github.com/agladysh/or-q)
 - Unpublished prior work
 
-## Concept
+## Study 0: Form-Based AI
+
+### Concept
 
 - Each LLM inference answers a query by filling a form via structured output.
 
@@ -48,7 +51,7 @@ Inspiration:
 
 - In AI-assisted software engineering, said artifacts are tracked in Git with the source code.
 
-### Core Primitives
+#### Core Primitives
 
 > [!NOTE] To be refined after additional studying of DSPy and other prior work.
 
@@ -87,9 +90,7 @@ Inspiration:
 
 > [!NOTE] Prototype-based inheritance would be beneficial.
 
-### Conceptual Studies
-
-#### Study 1. Bottom-top: Demonstrate potential implementability for a simpler version
+## Study 1. Bottom-top: Demonstrate potential implementability for a simpler version
 
 Ignores much of advanced aspects of the concept.
 
@@ -176,7 +177,7 @@ TeX-like problems very soon, if we're to implement more advanced parts of the co
 
 Main flaw though: the study does not demonstrate a business process. Next: top-bottom.
 
-#### Study 2: Top-bottom: Business Process
+## Study 2: Top-bottom: Business Process
 
 Taxonomy:
 
@@ -399,7 +400,7 @@ Self-linting of codestyle by is-good-action-definition etc.,
 
 (This concludes the study: we've got sidetracked, but got interestring results.)
 
-### Study 3: Declarative Processes
+## Study 3: Declarative Processes
 
 Motivation:
 
