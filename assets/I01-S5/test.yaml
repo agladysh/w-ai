@@ -1,0 +1,5 @@
+name: test
+input: string
+output: string
+run:
+  - print: { process.input }

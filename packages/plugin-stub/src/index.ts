@@ -1,4 +1,4 @@
-import type { Plugin } from '@w-ai/lib';
+import type { Plugin, Value } from '@w-ai/lib';
 
 import pkg from '../package.json' with { type: 'json' };
 
@@ -7,10 +7,14 @@ const plugin: Plugin = {
   description: pkg.description,
   entities: {
     actions: {
-      log: (arg: unknown) => {
-        console.log(arg);
-        return Promise.resolve(arg);
-      },
+      log: {
+        inputType: 'unknown',
+        outputType: 'unknown',
+        run: (arg: Value) => {
+          console.log(arg);
+          return Promise.resolve(arg);
+        },
+      }
     },
   },
 };
